@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>添加商品</title>
+</head>
+<body>
+	<form action="{:url('goods/doAdd')}" enctype="multipart/form-data" method="post">
+		商品名称：<input type="text" name="name"><br>
+		商品简介：<input type="text" name="pro"><br>
+		图片：<input type="file" name="img"><br>
+		商品价格：<input type="text" name="price"><br>
+		商品类型：<select  name="tag_id" value=""> 
+					<option value="1">新品上市</option>
+					<option value="2">热卖</option>
+				  </select><br>
+		商品内容：<script id="container" name="content" type="text/plain"></script>	
+		<input type="submit" name="" value="添加商品">			
+	</form>
+	 <!-- 配置文件 -->
+    <script type="text/javascript" src="/static/ueditor/ueditor.config.js"></script>
+    <!-- 编辑器源码文件 -->
+    <script type="text/javascript" src="/static/ueditor/ueditor.all.js"></script>
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript">
+        var ue = UE.getEditor('container');
+    </script>
+</body>
+</html>
