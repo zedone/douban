@@ -18,26 +18,16 @@ class Goods extends Controller{
 		$goodsRes = $goodsModel -> formatGoods($goodsList,$tagList);
 		$banners = $bannerModel -> getLists();
 		$bannerRes = $bannerModel -> formatBanner($banners);
-		//dump($bannerRes);die;
-		$result = [
-			'error' =>  0 ,
-			'msg'   => 'ok',
-			'data'  =>[
-				'goods' => $goodsRes,
-				'banner'=> $bannerRes
-			]
-		];
-		echo json_encode($result);
+		
+		$result = array('goods'=>$goodsRes,'banner'=>$bannerRes);
+		\util\Response::returnData(0,'ok',$result);
 	}
 
 	public function detail(){
 		$id = input('id');
 		if(empty($id)){
-			$result = [
-				'error'  =>  1,
-				'msg'=> 'param error'
-			];
-			echo json_encode($result);die;
+			\util\Response::returnData(1,'param error',[]);
+			
 		}
 
 		$goodsModel = new GoodsModel;
@@ -46,16 +36,8 @@ class Goods extends Controller{
 		$tagList = $tagModel -> arr($tagList);
 		$goodsInfo = $goodsModel -> getById($id);
 		$goodsInfo = $goodsModel -> getGoodsInfo($goodsInfo,$tagList);
-		//dump($goodsInfo);die;
-		$result = [
-			'error'  =>  0,
-			'msg'    => 'ok',
-			'data'   => [
-				'info' => $goodsInfo,
-				//'content'=>$content
-			],
-		];
-		//dump($result);die;
-		echo json_encode($result);
+		$result = array('info'=>$goodsInfo);
+		\util\Response::returnData(0,'ok',$result);
+		//echo json_encode($result);
 	}
 }
