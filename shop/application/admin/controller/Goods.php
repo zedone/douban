@@ -33,4 +33,11 @@ class Goods extends Controller
 			$this->error('fail');
 		}
 	}
+
+	public function lists(){
+		$goodsModel = new GoodsModel;
+		$goodsRes = $goodsModel -> goodsLists();
+		$this->assign('goodsRes',$goodsRes);
+		return $this->fetch();
+	}
 }

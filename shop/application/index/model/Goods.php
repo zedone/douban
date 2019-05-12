@@ -60,3 +60,9 @@ class Goods extends Model{
 		return $value;
 	}
 }
+
+
+
+
+
+

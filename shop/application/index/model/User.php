@@ -9,6 +9,10 @@ class User extends Model{
         //$lists = $lists -> toArray();
         return $lists;
 	}
+
+	public function regUser($data){
+		return $this->save($data);
+	}
 	// public function checkLogin($data){
 	// 	$token = input('token');
 	// 	$time =  md5(time().rand(1,100000));

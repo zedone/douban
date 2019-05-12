@@ -15,8 +15,7 @@ class Token extends Model{
 
     public function setUserInfo($userInfo) {
         $token = $this->getToken($userInfo);
-        $value[] = $userInfo;
-        $value = serialize($value);
+        $value = serialize($userInfo);
         $data = [
         	'token' => $token,
             //'value' => $value,
@@ -32,5 +31,15 @@ class Token extends Model{
         $time =  md5(time().rand(1,100000));
         $user = md5(serialize($user));
         return 'user_token_'.md5($time. $user);
+    }
+
+    public function getTokenInfo($value){
+        $lists = $this->where('token',$value)->find();
+        if($lists){
+            $lists = $lists->toArray();
+        }
+        $tmp = unserialize($lists['value']);
+        //dump($tmp);die;
+        return $tmp;
     }
 }

@@ -7,4 +7,8 @@ class Goods extends Model{
 		$lists =  $this->save($data);
 		return $lists;
 	}
+
+	public function goodsLists(){
+		return $this->select();
+	}
 }

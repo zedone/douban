@@ -1,23 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>添加商品</title>
-</head>
-<body>
-	<form action="{:url('goods/doAdd')}" enctype="multipart/form-data" method="post">
-		商品名称：<input type="text" name="name"><br>
-		商品简介：<input type="text" name="pro"><br>
-		图片：<input type="file" name="img"><br>
-		商品价格：<input type="text" name="price"><br>
-		商品类型：<select  name="tag_id" value=""> 
-					<option value="1">新品上市</option>
-					<option value="2">热卖</option>
-				  </select><br>
-		商品内容：<script id="container" name="content" type="text/plain"></script>	
-		<input type="submit" name="" value="添加商品">			
-	</form>
-	 <!-- 配置文件 -->
+{include file='public/head'}
+    <!--/sidebar-->
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="">首页</a><span class="crumb-step">&gt;</span><a class="crumb-name" href="">商品管理</a><span class="crumb-step">&gt;</span><span>新增商品</span></div>
+        </div>
+        <div class="result-wrap">
+            <div class="result-content">
+                <form action="{:url('goods/doAdd')}" enctype="multipart/form-data" method="post">
+                    <table class="insert-tab" width="100%">
+                        <tbody><tr>
+                            <th width="120"><i class="require-red">*</i>分类：</th>
+                            <td>
+                                <select name="tag_id" id="catid" class="required">
+                                    <option value="">请选择</option>
+                                    <option value="1">新品上市</option>
+                                    <option value="2">热卖</option>
+                                </select>
+                            </td>
+                        </tr>
+                            <tr>
+                                <th><i class="require-red">*</i>商品名称：</th>
+                                <td>
+                                    <input class="common-text required" id="title" name="name" size="50" value="" type="text">
+                                </td>
+                            </tr>
+                             <tr>
+                                <th>商品价格：</th>
+                                <td><input class="common-text required" name="price" size="50" type="text"></td>
+                            </tr>
+                            <tr>
+                                <th>商品简介：</th>
+                                <td><input class="common-text required" name="pro" size="50" type="text"></td>
+                            </tr>
+                            <tr>
+                                <th><i class="require-red">*</i>缩略图：</th>
+                                <td><input name="img" id="" type="file"><!--<input type="submit" onclick="submitForm('/js__ADMIN__/admin/design/upload')" value="上传图片"/>--></td>
+                            </tr>
+                            <tr>
+                                <th>商品内容：</th>
+                        
+                                <script id="container" name="content"  type="text/plain" style="width:1024px;height:500px;"></script>
+                           
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td>
+                                    <input class="btn btn-primary btn6 mr10" value="提交" type="submit">
+                                    <input class="btn btn6" onclick="history.go(-1)" value="返回" type="button">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <!--/main-->
+</div>
     <script type="text/javascript" src="/static/ueditor/ueditor.config.js"></script>
     <!-- 编辑器源码文件 -->
     <script type="text/javascript" src="/static/ueditor/ueditor.all.js"></script>

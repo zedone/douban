@@ -9,6 +9,7 @@ class Tag extends Model{
 		foreach ($lists as  $value) {
 			$result[] = $value->toArray();
 		}
+		//dump($result);die;
 		return $result;
 	}
 
