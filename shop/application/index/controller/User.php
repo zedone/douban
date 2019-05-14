@@ -15,7 +15,7 @@ class User extends Controller{
 		];
 		//dump($users);die;
 		if(empty($users['phone']) || empty($users['password'])){
-			echo '参数错误1';die;
+			\util\Response::returnData(3,'数据不能为空',[]);
 		}
 		$userModel = new UserModel;
 		$info = $userModel -> getLists($users);
@@ -23,31 +23,19 @@ class User extends Controller{
 		$tmp = [
 			'id'    => $info['id'],
 			'name'  => $info['name'],
-			'phone' => $info['phone']
+			'phone' => $info['phone'],
+			'password' => $info['password']
 		];
 		//dump($data);die;
-		if($users['phone'] == $info['phone']){
-			if($users['password'] == $info['password']){
-				$token = $tokenModel->setUserInfo($tmp);
-				$result = [
-					'error' => 0,
-					'msg'   => '登录成功',
-					'data' =>[
-						'token' => $token,
-						'info' => $tmp
-					]	
-				];
-			}else{
-				$result = [
-					'error' => 1,
-					'msg'   => '密码错误',
-					];	
-			}
+		if(empty($info['phone'])){
+			\util\Response::returnData(2,'用户不存在',[]);
+		}
+		if($users['password'] == $info['password']){
+			$token = $tokenModel->setUserInfo($tmp);
+			$result = array('token'=>$token,'info'=>$tmp);
+			\util\Response::returnData(0,'登录成功',$result);
 		}else{
-			$result = [
-			'error' => 2,
-			'msg'   => '用户不存在',
-			];
+			\util\Response::returnData(1,'密码错误',[]);
 		}
 		echo json_encode($result);die;
 	}
@@ -56,38 +44,21 @@ class User extends Controller{
 		return $this->fetch();
 	}
 	public function info(){
-		$newToken = input('token');
+		$newToken = input('post.token');
 		$newTime = time();
+		if(empty($newToken)){
+			\util\Response::returnData(1,'token为空',[]);
+		}
 		$token = new TokenModel;
 		$token = $token -> getUserInfo($newToken);
-		
-		if(request()->isPost()){
-			if(empty($newToken)){
-				$result = [
-					'error' => 1,
-					'msg'   => 'token不能为空'
-				];
-			
-			}elseif($newToken == $token['token'] && $newTime<$token['expire']){
-				$value = $token->getTokenInfo($newToken);
-				//$info[] = $value;
-				//dump($value);die;
-				$result = [
-					'error' => 0,
-					'msg'   => 'ok',
-					'data' => [
-						'info' => $value
-					]
-				];
-			}else{
-				$result = [
-					'error' => 2,
-					'msg'   => 'token不存在',
-				];
-			}
-
+		if(empty($token['token'])){
+			\util\Response::returnData('2','token不存在',[]);
 		}
-		echo json_encode($result);
+		if($newToken == $token['token'] && $newTime<$token['expire']){
+			$result = array('info'=>$token['value']);
+			\util\Response::returnData('0','ok',$result);
+		}
+		echo json_encode($result);die;
 	}
 
 	public function regs(){
@@ -101,8 +72,8 @@ class User extends Controller{
 			$user = new UserModel;
 			if(empty($data['name']) || empty($data['phone']) || empty($data['password'])){
 				$result = [
-				'error' => 1,
-				'msg'   => '数据不能为空',
+					'error' => 1,
+					'msg'   => '数据不能为空',
 				];
 				return json_encode($result);die;
 			}

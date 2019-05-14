@@ -13,9 +13,4 @@ class User extends Model{
 	public function regUser($data){
 		return $this->save($data);
 	}
-	// public function checkLogin($data){
-	// 	$token = input('token');
-	// 	$time =  md5(time().rand(1,100000));
-	// 	$logToken = 'user_token_'.md5($time. $user);
-	// }
 }

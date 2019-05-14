@@ -4,6 +4,9 @@ use think\Controller;
 use app\index\model\Goods as GoodsModel;
 use app\index\model\Banner as BannerModel;
 use app\index\model\Tag as TagModel;
+use app\index\model\Cart;
+use app\index\model\Token;
+use app\index\model\Attr;
 
 class Goods extends Controller{
 	public function index(){
@@ -26,18 +29,154 @@ class Goods extends Controller{
 	public function detail(){
 		$id = input('id');
 		if(empty($id)){
-			\util\Response::returnData(1,'param error',[]);
-			
+			\util\Response::returnData(1,'参数错误',[]);
 		}
-
 		$goodsModel = new GoodsModel;
 		$tagModel = new TagModel;
 		$tagList = $tagModel -> getList();
 		$tagList = $tagModel -> arr($tagList);
 		$goodsInfo = $goodsModel -> getById($id);
 		$goodsInfo = $goodsModel -> getGoodsInfo($goodsInfo,$tagList);
-		$result = array('info'=>$goodsInfo);
-		\util\Response::returnData(0,'ok',$result);
+		$attrModel  = new Attr;
+		$attr = $attrModel -> getLists($id);
+		$attrFormat = $attrModel -> formatAttr($attr);
+		$goodsInfo['attr'] = $attrFormat;
+
+		$res = array('info'=>$goodsInfo);
+		\util\Response::returnData(0,'ok',$res);
 		//echo json_encode($result);
 	}
+
+	public function cart(){
+		$data = input('post.');
+		$id = input('post.id');
+		$token = input('post.token');
+		if(!empty($id) && !empty($token)){
+			$goodsModel = new GoodsModel;
+			$goodsInfo = $goodsModel -> getById($id);
+			$tokenModel = new Token;
+			$lists = $tokenModel -> getUserInfo($token);
+			$data = [
+				'goods_id'  => $goodsInfo['id'],
+				'count'     => $data['count'],
+				'color'     => $data['color'],
+				'price'     => $goodsInfo['price'],
+				'user_id'   => $lists['value']['id'],
+				'size'      => $data['size']
+			];
+			$cartModel = new Cart;
+			$addCart = $cartModel -> add($data);
+			$result = [
+	            'error'=> 0,
+	            'msg'  => '已加入购物车',
+	            'data' =>[]
+            ];
+            return json_encode($result);die(); 
+		}else{
+			\util\Response::returnData(1,'param error',[]);
+		}
+	}
+
+	public function cartInfo(){
+		$newToken = input('post.token');
+		$newTime = time();
+		$cart = [];
+		if(empty($newToken)){
+			\util\Response::returnData(1,'token不能为空',[]);die;
+		}
+		$tokenModel = new Token;
+		$token = $tokenModel->getUserInfo($newToken);
+		if(!$token){
+			\util\Response::returnData(2,'token不存在',[]);die;
+		}
+		// dump($token);die;
+		if($newTime > $token['expire']){
+			\util\Response::returnData(3,'token已过期',[]);die;
+		}
+		$userid = $token['value']['id'];
+		$cartModel = new Cart;
+		$cartLists = $cartModel -> getLists('user_id',$userid);
+		//dump($cartLists);die;
+		foreach ($cartLists as $value) {
+			$goodsModel = new GoodsModel;
+			$goodsLists = $goodsModel->getInfo('id',$value['goods_id']);
+			$cart[] = [
+			'name'  => $goodsLists['name'],
+            'color' => $value['color'],
+            'price' => $goodsLists['price'],
+            'count' => $value['count'] ,
+			];
+		}
+		
+		$result = array('cart'=>$cart);
+		\util\Response::returnData(0,'购物车列表',$result);
+	}
+
+	public function cartDec(){
+		$newToken = input('post.token');
+		$newTime = time();
+		if(empty($newToken)){
+			\util\Response::returnData(1,'token不能为空',[]);die;
+		}
+		$tokenModel = new Token;
+		$token = $tokenModel->getUserInfo($newToken);
+		if(!$token){
+			\util\Response::returnData(2,'token不存在',[]);die;
+		}
+		// dump($token);die;
+		if($newTime > $token['expire']){
+			\util\Response::returnData(3,'token已过期',[]);die;
+		}
+
+		$data = input('post.');
+		//商品id
+		$goods_id = input('post.goods_id');
+		//通过token拿用户id
+		$id = $token['value']['id'];
+		$cartModel = new Cart;
+		$res = $cartModel -> getLists('user_id',$id);
+		foreach ($res as  $value) {
+			if($value['goods_id'] == $goods_id){
+			$count   = !empty($data['count']) ?$data['count']:1;
+			$tmpcount = 0;
+			$tmpcount = $value['count'] - $count;
+			if($tmpcount>0){
+				$result = $cartModel -> delNum($id,$tmpcount);
+				\util\Response::returnData(0,'删除成功',[]);die;
+				}else{
+					\util\Response::returnData(2,'删除数量大于原有数量',[]);die;
+				}
+			}else{
+				\util\Response::returnData(1,'商品不存在',[]);die;
+			}
+		}	
+	}
+	//清空购物车
+	public function delCart(){
+		$newToken = input('post.token');
+		$newTime = time();
+		if(empty($newToken)){
+			\util\Response::returnData(1,'token不能为空',[]);die;
+		}
+		$tokenModel = new Token;
+		$token = $tokenModel->getUserInfo($newToken);
+		if(!$token){
+			\util\Response::returnData(2,'token不存在',[]);die;
+		}
+		// dump($token);die;
+		if($newTime > $token['expire']){
+			\util\Response::returnData(3,'token已过期',[]);die;
+		}
+		$userid = $token['value']['id'];
+		$cartModel = new Cart;
+		$delCartlists = $cartModel -> delCart($userid);
+		//dump($delCartlists);die;
+		if($delCartlists){
+			\util\Response::returnData(0,'清空购物车成功',[]);die;
+		}else{
+			\util\Response::returnData(0,'清空失败',[]);die;
+		}
+	}
+
 }
+	

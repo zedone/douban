@@ -7,6 +7,13 @@ class Goods extends Model{
 		$lists = $this->select();
 		return $lists;
 	}
+	 public function getInfo($field,$value){
+        $info = $this->where($field,$value)->find();
+        if ($info) {
+            $info = $info->toArray();
+        }
+        return $info;
+    }
 
 	public function formatGoods($goods,$tag=array()){
 		$result = [
@@ -59,6 +66,7 @@ class Goods extends Model{
 		//$result = $value;
 		return $value;
 	}
+	
 }
 
 
