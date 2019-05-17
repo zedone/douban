@@ -1,0 +1,53 @@
+{include file='public/head'}
+    <!--/sidebar-->
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="">首页</a><span class="crumb-step">&gt;</span><a class="crumb-name" href="">商品管理</a><span class="crumb-step">&gt;</span><span>查看商品</span></div>
+        </div>
+        <div class="result-wrap">
+            <div class="result-content">
+                <form action="{:url('goods/uptype')}" enctype="multipart/form-data" method="post">
+                    <table class="insert-tab" width="100%">
+                        <tbody>
+                            {volist name="attrLists" id="vo"}
+                           
+                             <tr>
+                                <th>商品类型：</th>
+                                <td><input class="common-text required" value="{$vo.attr_type}" name="type" size="50" type="text"></td>
+                            </tr>
+                            <tr>
+                                <th>属性：</th>
+                                <td><input class="common-text required" value="{$vo.attr_name}" name="pro" size="50" type="text"></td>
+                            </tr>
+                            <tr>
+                                <th><i class="require-red">*</i>缩略图：</th>
+                                <td><img src="http://www.myshop.com/{$vo.pic}" height="50" width="50"></td>
+                            </tr>
+                           
+                            <tr>
+                                <th></th>
+                                <td>
+                                   
+                                    <input class="btn btn6" onclick="history.go(-1)" value="返回" type="button">
+                                </td>
+                            </tr>
+                            {/volist}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <!--/main-->
+</div>
+    <script type="text/javascript" src="/static/ueditor/ueditor.config.js"></script>
+    <!-- 编辑器源码文件 -->
+    <script type="text/javascript" src="/static/ueditor/ueditor.all.js"></script>
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript">
+        var ue = UE.getEditor('container');
+    </script>
+</body>
+</html>

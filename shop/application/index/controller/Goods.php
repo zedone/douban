@@ -50,31 +50,46 @@ class Goods extends Controller{
 	public function cart(){
 		$data = input('post.');
 		$id = input('post.id');
-		$token = input('post.token');
-		if(!empty($id) && !empty($token)){
-			$goodsModel = new GoodsModel;
-			$goodsInfo = $goodsModel -> getById($id);
-			$tokenModel = new Token;
-			$lists = $tokenModel -> getUserInfo($token);
-			$data = [
-				'goods_id'  => $goodsInfo['id'],
-				'count'     => $data['count'],
-				'color'     => $data['color'],
-				'price'     => $goodsInfo['price'],
-				'user_id'   => $lists['value']['id'],
-				'size'      => $data['size']
-			];
-			$cartModel = new Cart;
-			$addCart = $cartModel -> add($data);
-			$result = [
-	            'error'=> 0,
-	            'msg'  => '已加入购物车',
-	            'data' =>[]
-            ];
-            return json_encode($result);die(); 
-		}else{
-			\util\Response::returnData(1,'param error',[]);
+		$newToken = input('post.token');
+		$newTime = time();
+		if(empty($newToken)){
+			\util\Response::returnData(1,'token不能为空',[]);die;
 		}
+		$tokenModel = new Token;
+		$token = $tokenModel->getUserInfo($newToken);
+		//$lists = $tokenModel -> getUserInfo($newToken);
+		if(!$token){
+			\util\Response::returnData(2,'token不存在',[]);die;
+		}
+		if($newTime > $token['expire']){
+			\util\Response::returnData(3,'token已过期',[]);die;
+		}
+		$goodsModel = new GoodsModel;
+		$goodsInfo = $goodsModel -> getById($id);
+		
+		$data = [
+			'goods_id'  => $goodsInfo['id'],
+			'count'     => $data['count'],
+			'color'     => $data['color'],
+			'price'     => $goodsInfo['price'],
+			'user_id'   => $token ['value']['id'],
+			'size'      => $data['size']
+		];
+		$cartModel = new Cart;
+		$count = $data['count'];
+  		$cartLists = $cartModel -> getLists('user_id',$token['value']['id']);
+  		foreach ($cartLists as $value) {
+  			if($value['goods_id'] == $goodsInfo['id'] && $value['size'] == $data['size']){
+	  			$count = $value['count'] +$count;
+	  			$result = $cartModel->repeatNum('id',$value['id'],'count',$count);
+	  			\util\Response::returnData(0,'已加入购物车',[]);
+  			if(!$result){
+                \util\Response::returnData(4,'增加失败',[]);die;
+           	}
+  		}	
+  	}
+  		$addCart = $cartModel -> add($data);
+  		\util\Response::returnData(0,'已加入购物车',[]);
 	}
 
 	public function cartInfo(){
@@ -168,6 +183,7 @@ class Goods extends Controller{
 			\util\Response::returnData(3,'token已过期',[]);die;
 		}
 		$userid = $token['value']['id'];
+		
 		$cartModel = new Cart;
 		$delCartlists = $cartModel -> delCart($userid);
 		//dump($delCartlists);die;
@@ -179,4 +195,6 @@ class Goods extends Controller{
 	}
 
 }
+	
+
 	

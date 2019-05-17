@@ -12,8 +12,8 @@ class Banner extends Model{
 		$result = [];
 		foreach ($banners as $value) {
 			$item = [
-				"img" => "http://www.shop.com/".$value['img'],
-                "url" => "http://www.shop.com/".$value['url']
+				"img" => "http://www.myshop.com/".$value['img'],
+                "url" => "http://www.myshop.com/".$value['url']
 			];
 			$result[] = $item;
 		}

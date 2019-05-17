@@ -24,7 +24,7 @@ class Goods extends Model{
 				'id' => $value['id'],
 				'title' => $value['name'],
 				'desc' => $value['pro'],
-				'img' => 'http://www.shop.com/'.$value['img'],
+				'img' => 'http://www.myshop.com/'.$value['img'],
 				'price' => "￥".$value['price'] / 100,
 				'tag' => []
 			];
@@ -48,7 +48,7 @@ class Goods extends Model{
 	public function getGoodsInfo($item,$tag=array()){
 		$value = [
 			'id' => $item['id'],
-			'img'   => 'http://www.shop.com/'.$item['img'],
+			'img'   => 'http://www.myshop.com/'.$item['img'],
             'title' => $item['name'],
             'desc'  => $item['pro'],
             'tag_id'=> $item['tag_id'],

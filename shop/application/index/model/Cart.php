@@ -16,6 +16,9 @@ class Cart extends Model{
 		//dump($result);die;
 		return $result;
 	}
+	public function repeatNum($field1,$info,$field2,$data){
+		return $this->where($field1,$info)->setField($field2, $data);
+	}
 
 	//删除购物车里的物品数量
 	public function delNum($id,$tmpcount){

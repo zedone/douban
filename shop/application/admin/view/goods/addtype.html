@@ -1,0 +1,51 @@
+{include file='public/head'}
+    <!--/sidebar-->
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="">首页</a><span class="crumb-step">&gt;</span><a class="crumb-name" href="">属性管理</a><span class="crumb-step">&gt;</span><span>添加属性</span></div>
+        </div>
+        <div class="result-wrap">
+            <div class="result-content">
+                <form action="{:url('goods/addtype')}" enctype="multipart/form-data" method="post">
+                    <table class="insert-tab" width="100%">
+                        <tbody>
+                            <tr>
+                                
+                                <td><input class="common-text required"  name="goods_id" size="50" type="hidden" value="{$goodsLists['id']}"></td>
+                            </tr>
+                            <tr>
+                                <th>商品名称：</th>
+                                <td><input class="common-text required" size="50" type="text" value="{$goodsLists['name']}"></td>
+                            </tr>
+                            <tr>
+                                <th>商品类型：</th>
+                                <td><input class="common-text required"  name="attr_type" size="50" type="text" value=""></td>
+                            </tr>
+                            <tr>
+                                <th>商品属性：</th>
+                                <td><input class="common-text required" name="attr_name" size="50" type="text" value=""></td>
+                            </tr>
+                            <tr>
+                                <th><i class="require-red">*</i>缩略图：</th>
+                                <td><input name="pic" id="" type="file"><!--<input type="submit" onclick="submitForm('/js__ADMIN__/admin/design/upload')" value="上传图片"/>--></td>
+                            </tr>
+                           
+                            <tr>
+                                <th></th>
+                                <td>
+                                    <input class="btn btn-primary btn6 mr10" value="提交" type="submit">
+                                    <input class="btn btn6" onclick="history.go(-1)" value="返回" type="button">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <!--/main-->
+</div>
+</body>
+</html>
